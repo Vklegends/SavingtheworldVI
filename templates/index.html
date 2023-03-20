@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script>
+      const keySequence = [];
+let konamiString = '';
+const konamiCode = [
+    
+    'j',
+    'o',
+    'v',
+    'a',
+    'n'
+];
+
+document.addEventListener('keyup', function(e) {
+    keySequence.push(e.key);
+    keySequence.splice(
+        -konamiCode.length - 1, 
+        keySequence.length - konamiCode.length
+    );
+    konamiString = konamiCode.join('');
+
+    if (keySequence.join('').includes(konamiString)) {
+       setTimeout(function() {
+          window.location.href = 'https://m.youtube.com/watch?v=6QCMGKUH6Ak';
+       }, 200);
+    }
+});</script>
+    <title>Personal Assistant</title>
+    <style>
+    body {
+      background-color: #000000; /* set the background color */
+      color: #F0F0F0; /* set the text color */
+    }
+  </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('#message-form').on('submit', function(event) {
+          event.preventDefault();
+          $.ajax({
+            url: '/ask',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(response) {
+              $('#chat').append('<div class="row"><div class="col-md-6"><p>' + response.response + '</p></div></div>');
+              $('#message').val('');
+            }
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <h1>Virtual Insider</h1>
+    <div id="chat">
+      <div class="row">
+        <div class="col-md-6">
+          <p>Hi, I am Vi how can I assist you?</p>
+        </div>
+      </div>
+    </div>
+    <form id="message-form">
+      <div class="form-group">
+        <input type="text" class="form-control" id="message" name="message">
+      </div>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </body>
+</html>
