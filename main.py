@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, make_response
 import random
 import datetime
 import pytz
 import requests
 import json
 import requests
-import redirect
 
 app = Flask(__name__)
 
@@ -31,6 +30,15 @@ responses = {
     'thanks': ['You\'re welcome!', 'No problem!', 'My pleasure!', 'Anytime!'],
     'name': ['My name is Assistant.', 'I\'m Assistant.', 'I\'m your personal assistant.'],
 }
+# pick up lines
+pickupline = [
+  "A life without you, would be like a computer without an OS",
+  "Are you a computer keyboard? Because you’re my type.",
+  "Are you a computer whiz… it seems you know how to turn my software to hardware?",
+  "You are my semicolon; always present in everything I do.",
+  "Baby, there is no part of my body that is Micro or Soft.",
+  "You are my loop condition. I keep coming back to you"
+]
 #define some error responses 
 errorres = [
     "I'm sorry I do not understand",
@@ -44,7 +52,14 @@ sgt = pytz.timezone('Asia/Singapore')
 now = datetime.datetime.now(tz=sgt)
 
 current_date = datetime.date.today()
+sad = [
+  "I promise I’ll be here when you are ready to talk.",
+  "You are important to me, and I love you. Even when things are hard, you are not alone.",
+  "I can’t begin to understand what you are going through, but you are strong, and you can get through this.",
+  "Remember that everything that happens to you will ultimately make you stronger. When you get through this, and I know you will, you’ll have gained strength and wisdom. It might not make mcuh sense today, but it will later." ,
+  "Just know you are important and even though I am a computer program I do care about you!"
 
+]
 
 # Define a list of 50 funny jokes
 jokes = [
@@ -93,75 +108,51 @@ jokes = [
 def index():
     return render_template('index.html')
 
+def check(inputs,userinput):
+  for i in inputs:
+    if i in userinput.lower():
+      return True
+
+  return False
+
 @app.route('/ask', methods=['POST'])
 def ask():
     message = request.form['message']
-
+#check(['', ''], message):
     # Check for greetings
-    if any(word in message.lower() for word in ['hi', 'hello', 'hey']):
-        response = random.choice(responses['greeting'])
+    if check(['hi', 'hello', 'hey'], message):
+      response = random.choice(responses['greeting'])
     # Check for goodbyes
-    elif any(word in message.lower() for word in ['goodbye', 'bye']):
+    elif check(['goodbye', 'bye',], message):
         response = random.choice(responses['goodbye'])
     # Check for thanks
-    elif any(word in message.lower() for word in ['thanks', 'thank you']):
+    elif check(['thanks', 'thank you',], message):
       response = random.choice(responses['thanks'])
 
     #user interaction
     
-    elif any(word in message.lower() for word in ['how are you', 'how are u']) :
-      response = 'Im great how are you by the way'
-      
-      useremotion = message
-      if any(word in message.lower() for word in ['good', 'great']):
-        response ='thats great to hear'
+    elif check(['how are you', 'how r you'], message):
+      response = 'Im great how are you by the way'      
+    elif check(['I' and'good','I' and 'great'], message):
+        response = 'thats great to hear!'
              # message = input()
-      elif 'bad' in useremotion or 'not good'in useremotion:
-              response = 'Ohh thats sad to hear but I am here for you!'
+    elif check(['bored','tired'], message):
+      response = 'Ohh thats sad to hear but I am here for you!,type in jokes and ill tell you one if that can make you feel better!'
               #message = input()
-    #elif any(word in message.lower() for word in ['123456', 'ngyu']) :
-     # return redirect(https://m.youtube.com/watch?v=6QCMGKUH6Ak)
-      
-    elif any(word in message.lower() for word in ['what is your name', 'name']) :
+    elif check(['name', 'what is your name'], message):
       response = "My name is Vi your personal Assistant."
-
+    elif check(['depressed','I' and 'sad','I' and 'lonely', 'I' and 'unhappy' ], message):
+      response = random.choice(sad)
     elif any(word in message.lower() for word in ['what time is it', 'time']) :
       response = "The current time in Singapore is:", sg_time_str
     elif any(word in message.lower() for word in ['what is the date', 'date']) :
       response = "The current date in Singapore is:", sg_time_str
-    elif 'joke' in message:
+    elif any(word in message.lower() for word in ['tell me a joke', 'joke']) :
       response = random.choice(jokes)
-      return {'response': response}
-    elif 'search' in message:
-      try:
-        response ='welcome to wikisearch eter your query'
-          # Define the search ter
-        return {'response': response}
-        return {'message': message}
-        search_term = message
-        search_term = search_term.replace(" ", "_") 
-        return {'search_term': message}
-          # Define the URL for the API call
-        url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{search_term}"
 
-          # Make the API call
-        response = requests.get(url)
-
-          # Parse the response as JSON
-        response = json.loads(response.text)
-        data = json.loads(response.text)
-          # Print the summary of the page
-        response = data["extract"]
-        x = 1 / 0
-        return {'response': response}
-     
+    elif check(['pick up line','pick-up line' ], message):
+      response = random.choice(pickupline)
   
-      except Exception as e:
-            # code to handle the exception
-        print("An error occurred:", e, 'please be more specific')
-        message = 'search'
-        return {'message': message}
-    
     elif "bye" in message or "goodbye" in message:
       response = "Goodbye!"  
           # Default response
