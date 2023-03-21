@@ -2,31 +2,29 @@
 <html>
   <head>
   <script>
-      const keySequence = [];
-let konamiString = '';
-const konamiCode = [
-    
-    'j',
-    'o',
-    'v',
-    'a',
-    'n'
-];
+const konamiCode = ['j', 'o', 'v', 'a', 'n'];
+const konamiCode1 = ['s', 'o', 's'];
 
-document.addEventListener('keyup', function(e) {
+function checkKonamiCode(code, url) {
+  let keySequence = [];
+  const konamiString = code.join('');
+  document.addEventListener('keyup', function(e) {
     keySequence.push(e.key);
-    keySequence.splice(
-        -konamiCode.length - 1, 
-        keySequence.length - konamiCode.length
-    );
-    konamiString = konamiCode.join('');
+    keySequence.splice(-code.length - 1, keySequence.length - code.length);
 
     if (keySequence.join('').includes(konamiString)) {
-       setTimeout(function() {
-          window.open('https://m.youtube.com/watch?v=6QCMGKUH6Ak','_blank');
-       }, );
+      setTimeout(function() {
+        window.open(url, '_blank');
+      }, 500);
+    let keySequence = [];
     }
-});</script>
+  });
+}
+
+checkKonamiCode(konamiCode, 'https://m.youtube.com/watch?v=6QCMGKUH6Ak');
+checkKonamiCode(konamiCode1, 'https://www.sos.org.sg/');
+</script>
+
     <title>Virtual Insider</title>
     <style>
     body {

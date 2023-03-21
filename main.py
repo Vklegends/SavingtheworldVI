@@ -140,16 +140,16 @@ def ask():
     elif check(['name', 'what is your name'], message):
       response = "My name is Vi your personal Assistant."
     elif check(['depressed','I' and 'sad','I' and 'lonely', 'I' and 'unhappy' ], message):
-      response = random.choice(sad)
+      response = random.choice(sad) + 'if you want to feel better try type J O V A N'
     elif any(word in message.lower() for word in ['what time is it', 'time']) :
       response = "The current time in Singapore is:", sg_time_str
     elif any(word in message.lower() for word in ['what is the date', 'date']) :
       response = "The current date in Singapore is:", sg_time_str
     elif any(word in message.lower() for word in ['tell me a joke', 'joke']) :
       response = random.choice(jokes)
-    elif check(['suicide','I' and 'kill' ], message):
-      response = 'are you okay?, If you need help please contact 1767'
-    elif check(['pick up line','pick-up line' ], message):
+    elif check(['suicide','I' and 'kill','I' and 'die'], message):
+      response = 'are you okay?, Please, Please contact 1767. Do know you are not alone and nothing is the end.'
+    elif check(['pick up line','pick-up line', 'pul' ], message):
       response = random.choice(pickupline)
     elif check(['goodbye', 'bye',], message):
       response = random.choice(responses['goodbye'])
@@ -164,3 +164,20 @@ def ask():
 
 
 app.run(host='0.0.0.0', port=81)
+
+
+
+#code dump
+'''document.addEventListener('keyup', function(e) {
+    keySequence.push(e.key);
+    keySequence.splice(
+        -konamiCode1.length - 1, 
+        keySequence.length - konamiCode1.length
+    );
+    konamiString1 = konamiCode1.join('');
+
+    if (keySequence.join('').includes(konamiString1)) {
+       setTimeout(function() {
+          window.open('https://www.sos.org.sg/');
+       }, );
+    }'''
