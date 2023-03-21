@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, make_response
+from flask import Flask, render_template, request, redirect, make_response, url_for
 import random
 import datetime
 import pytz
 import requests
 import json
 import requests
+
 
 app = Flask(__name__)
 
@@ -38,12 +39,17 @@ pickupline = [
   "You are my semicolon; always present in everything I do.",
   "Baby, there is no part of my body that is Micro or Soft.",
   "You are my loop condition. I keep coming back to you"
+  "I will make sure to provide a great user experience."
+  "Your name must be WiFi because I am feeling a connection. "
+  "Your beauty has been rivaling the graphics of Call of Duty. "
+  "If I were an operating system, your process would be my top priority. "
 ]
 #define some error responses 
 errorres = [
     "I'm sorry I do not understand",
   "I did not quite understant that" ,
-  "I'm not sure I know the answer to that"
+  "I'm not sure I know the answer to that",
+  "I'm sorry I do not have the answer to that"
 ]
 # Set the timezone to Singapore
 sgt = pytz.timezone('Asia/Singapore')
@@ -56,57 +62,51 @@ sad = [
   "I promise I’ll be here when you are ready to talk.",
   "You are important to me, and I love you. Even when things are hard, you are not alone.",
   "I can’t begin to understand what you are going through, but you are strong, and you can get through this.",
-  "Remember that everything that happens to you will ultimately make you stronger. When you get through this, and I know you will, you’ll have gained strength and wisdom. It might not make mcuh sense today, but it will later." ,
+  "Remember that everything that happens to you will ultimately make you stronger. When you get through this, and I know you will, you’ll have gained strength and wisdom. It might not make much sense today, but it will later." ,
   "Just know you are important and even though I am a computer program I do care about you!"
 
 ]
 
 # Define a list of 50 funny jokes
 jokes = [
-    "Why don't scientists trust atoms? Because they make up everything.",
-    "Why did the tomato turn red? Because it saw the salad dressing.",
     "Why don't skeletons fight each other? They don't have the guts.",
-    "Why did the math book look so sad? Because it had too many problems.",
-    "Why did the scarecrow win an award? Because he was outstanding in his field.",
-    "Why did the chicken cross the playground? To get to the other slide.",
-    "Why did the hipster burn his tongue? Because he drank his coffee before it was cool.",
     "Why did the cookie go to the doctor? Because it was feeling crumbly.",
-    "Why did the tomato blush? Because it saw the salad dressing.",
-    "Why did the banana go to the doctor? Because it wasn't peeling well.",
     "Why did the golfer wear two pairs of pants? In case he got a hole in one.",
     "Why don't seagulls fly by the bay? Because then they'd be bagels.",
-    "Why don't vampires go to barbecues? They don't like steak.",
     "Why did the coffee file a police report? It got mugged.",
     "Why did the teddy bear say no to dessert? Because it was stuffed.",
-    "Why did the snail paint an 'S' on his car? So people would say, 'Look at that S-car go!'",
     "Why was the math book sad? Because it had too many problems.",
     "Why did the robber take a bath? Because he wanted to make a clean getaway.",
-    "Why don't ants get sick? They have tiny ant-bodies.",
-    "Why did the banana go out with the prune? Because it couldn't get a date.",
-    "Why did the orange stop rolling down the hill? It ran out of juice.",
+  "Why did the orange stop rolling down the hill? It ran out of juice.",
     "Why did the pencil decide to break up with the eraser? It said their relationship was pointless.",
     "Why do bicycles fall over? Because they're two-tired.",
     "Why did the birdie go to the doctor? It needed tweetment.",
-    "Why did the frog call his insurance company? He had a jump in his car.",
     "Why don't oysters give to charity? Because they're shellfish.",
-    "Why did the scarecrow win an award? Because he was outstanding in his field.",
     "Why did the computer go to the doctor? Because it had a virus.",
     "Why did the tomato turn red? Because it saw the salad dressing.",
     "Why don't scientists trust atoms? Because they make up everything.",
     "Why don't blind people skydive? Because it scares the dog.",
-    "Why did the hipster burn his tongue? Because he drank his coffee before it was cool.",
     "Why did the man put his money in the freezer? He wanted cold hard cash!",
     "Why did the scarecrow win an award? Because he was outstanding in his field.",
     "Why did the tree go to the dentist? To get a root canal.",
-    "Why did the hipster burn his tongue? Because he drank his coffee before it was cool.",
-    "Why did the tomato turn red? Because it saw the salad dressing.",
     "Why did the old man fall in the well? Because he couldn't see that well.",
     "Why did the belt go to jail? Because it held up a pair of pants.",
 ]
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+  return render_template('index.html')
+  if request.method == 'POST':
+        message = request.form['message']
+        print("User input:", message)  # Print user input before response
+        return "You entered: " + message
+  else:
+    return '''
+            <form method="post">
+                <input type="text" name="user_input">
+                <input type="submit" value="Submit">
+            </form>
+            '''
 
 def check(inputs,userinput):
   for i in inputs:
@@ -122,9 +122,7 @@ def ask():
     # Check for greetings
     if check(['hi', 'hello', 'hey'], message):
       response = random.choice(responses['greeting'])
-    # Check for goodbyes
-    elif check(['goodbye', 'bye',], message):
-        response = random.choice(responses['goodbye'])
+    
     # Check for thanks
     elif check(['thanks', 'thank you',], message):
       response = random.choice(responses['thanks'])
@@ -149,13 +147,13 @@ def ask():
       response = "The current date in Singapore is:", sg_time_str
     elif any(word in message.lower() for word in ['tell me a joke', 'joke']) :
       response = random.choice(jokes)
-
+    elif check(['suicide','I' and 'kill' ], message):
+      response = 'are you okay?, If you need help please contact 1767'
     elif check(['pick up line','pick-up line' ], message):
       response = random.choice(pickupline)
-  
-    elif "bye" in message or "goodbye" in message:
-      response = "Goodbye!"  
-          # Default response
+    elif check(['goodbye', 'bye',], message):
+      response = random.choice(responses['goodbye'])
+
     else:
       response = random.choice(errorres)
 
